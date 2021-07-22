@@ -1,3 +1,6 @@
+* {
+  margin: 10px;
+}
 .modal {
   position: fixed;
   top: 0;
@@ -10,7 +13,10 @@
   align-items: center;
 
   &__body {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 2rem;
     width: 400px;
     border-radius: 5px;

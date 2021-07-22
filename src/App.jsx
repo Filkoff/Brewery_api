@@ -8,15 +8,9 @@ import { useContext } from "react";
 function App() {
   const { breweries, loading } = useContext(AppContext);
 
-  if (loading)
-    return (
-      <div className={styles.App}>
-        <Loading />
-      </div>
-    );
-
   return (
     <div className={styles.App}>
+      {loading ? <Loading /> : null}
       <h1>Breweries search</h1>
       <Filter />
       <Breweries breweries={breweries} />

@@ -3,8 +3,8 @@ import styles from "./Loading.module.scss";
 
 const Loading = () => {
   return (
-    <div>
-      <h2 className={styles.header}>Loading</h2>
+    <div className={styles.loading}>
+      <h1 className={styles.loading__header}>Loading</h1>
     </div>
   );
 };

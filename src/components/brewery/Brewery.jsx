@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./Brewery.module.scss";
 import Modal from "../modal/Modal";
+import { AppContext } from "../context/context";
+import { useContext } from "react";
 
 function Brewery({ brewery }) {
   const baseUrl = "https://api.openbrewerydb.org/breweries/";
-
   const [showModal, setShowModal] = useState(false);
   const [singleBrewery, setSingleBrewery] = useState();
+
+  const { setLoading } = useContext(AppContext);
 
   const onClose = (bool) => {
     setShowModal(bool);
   };
 
   const getBreweryInfo = async (id) => {
-    const res = await fetch(`${baseUrl}${id}`);
-    const brewery = await res.json();
-    setSingleBrewery(brewery);
-    setShowModal(true);
+    setLoading(true);
+    try {
+      const res = await fetch(`${baseUrl}${id}`);
+      const brewery = await res.json();
+      setSingleBrewery(brewery);
+      setShowModal(true);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   if (showModal) {
@@ -35,6 +45,7 @@ function Brewery({ brewery }) {
       </>
     );
   }
+
   return (
     <div className={styles.card}>
       <h4>{brewery.name}</h4>

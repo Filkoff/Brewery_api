@@ -6,7 +6,6 @@ const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState("");
   const [breweries, setBreweries] = useState([]);
-  //   const [citiesList, setCitiesList] = useState([]);
   const [types, setTypes] = useState([]);
   const [cities, setCities] = useState([]);
 
@@ -17,16 +16,6 @@ const AppProvider = ({ children }) => {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      setCities(
-        data.map((brewery) => {
-          return brewery.city;
-        })
-      );
-      setTypes(
-        data.map((brewery) => {
-          return brewery.brewery_type;
-        })
-      );
       setBreweries(data);
       setLoading(false);
     } catch (error) {
@@ -50,8 +39,8 @@ const AppProvider = ({ children }) => {
         cities,
         setTypes,
         setCities,
-        setUrl,
         url,
+        setUrl,
         loading,
         setLoading,
       }}

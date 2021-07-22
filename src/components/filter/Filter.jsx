@@ -4,6 +4,8 @@ import { useContext } from "react";
 
 const Filter = () => {
   const baseurl = "https://api.openbrewerydb.org/breweries";
+  const [cityPath, setCityPath] = useState("");
+  const [typePath, setTypePath] = useState("");
 
   const {
     types,
@@ -16,50 +18,54 @@ const Filter = () => {
     setLoading,
   } = useContext(AppContext);
 
-  const filterByCity = async (city) => {
-    setLoading(true);
-    try {
-      url === baseurl
-        ? setUrl(`${baseurl}?by_city=${city}`)
-        : setUrl(`${url}&by_city=${city}`);
+  const getBrewData = async () => {
+    const response = await fetch(baseurl);
+    const data = await response.json();
 
-      const response = await fetch(url);
-      const data = await response.json();
-      setBreweries(data);
-      setTypes(
-        data.map((brewery) => {
-          return brewery.brewery_type;
-        })
-      );
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
+    setCities(
+      data.map((brewery) => {
+        return brewery.city;
+      })
+    );
+    setTypes(
+      data.map((brewery) => {
+        return brewery.brewery_type;
+      })
+    );
   };
 
-  const filterByType = async (type) => {
-    setLoading(true);
-    try {
-      url === baseurl
-        ? setUrl(`${baseurl}?by_type=${type}`)
-        : setUrl(`${url}&by_type=${type}`);
-      const response = await fetch(url);
-      const data = await response.json();
-      setBreweries(data);
-      setCities(
-        data.map((brewery) => {
-          return brewery.city;
-        })
-      );
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    getBrewData();
+  }, []);
 
   const uniqueTypes = [...new Set(types)];
   const uniqueCities = [...new Set(cities)];
 
+  const fetchFilteredData = async (cityArg, typeArg) => {
+    try {
+      setUrl(`${baseurl}?by_city=${cityArg}&by_type=${typeArg}`);
+      const response = await fetch(url);
+      const data = await response.json();
+      setBreweries(data);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const filterByCity = async (city) => {
+    setLoading(true);
+    setCityPath(city);
+    fetchFilteredData(city, typePath);
+    setLoading(false);
+  };
+
+  const filterByType = async (type) => {
+    setLoading(true);
+    setTypePath(type);
+    fetchFilteredData(cityPath, type);
+    setLoading(false);
+  };
   return (
     <div>
       <select
