@@ -83,7 +83,7 @@ const Filter = () => {
               }}
             >
               <option aria-label="None" value="" />
-              <option value="">All</option>
+              <option value=" ">All</option>
               {uniqueCities.map((item, index) => {
                 return (
                   <option value={item} key={index}>
@@ -105,7 +105,7 @@ const Filter = () => {
               }}
             >
               <option aria-label="None" value="" />
-              <option value="">All</option>
+              <option value=" ">All</option>
               {uniqueTypes.map((item, index) => {
                 return (
                   <option value={item} key={index}>
