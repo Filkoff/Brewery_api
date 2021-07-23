@@ -1,7 +1,10 @@
 import React from "react";
 import styles from "./Modal.module.scss";
+import { useTranslation } from "react-i18next";
+import { Button, Typography } from "@material-ui/core";
 
 const Modal = ({ brew, onClose }) => {
+  const { t } = useTranslation();
   const showPhone = (brew) => {
     return brew.phone ? `phone: ${brew.phone}` : null;
   };
@@ -15,12 +18,20 @@ const Modal = ({ brew, onClose }) => {
   return (
     <div className={styles.modal}>
       <div className={styles.modal__body}>
-        <h4>{brew.name}</h4>
-        <p>{`Brewery type: ${brew.brewery_type}`}</p>
-        <p>{`Address: ${brew.city}, ${showState(brew)}, 
-        ${showStreet(brew)}`}</p>
-        <p>{showPhone(brew)}</p>
-        <button onClick={() => onClose(false)}>Close</button>
+        <Typography variant="h5">{brew.name}</Typography>
+        <Typography variant="subtitle1">{`Brewery type: ${brew.brewery_type}`}</Typography>
+        <Typography variant="subtitle1">{`Address: ${brew.city}, ${showState(
+          brew
+        )}, 
+        ${showStreet(brew)}`}</Typography>
+        <Typography variant="subtitle1">{showPhone(brew)}</Typography>
+        <Button
+          onClick={() => onClose(false)}
+          variant="contained"
+          color="primary"
+        >
+          {t("button3")}
+        </Button>
       </div>
     </div>
   );

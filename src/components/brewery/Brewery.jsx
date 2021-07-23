@@ -3,16 +3,19 @@ import styles from "./Brewery.module.scss";
 import Modal from "../modal/Modal";
 import { AppContext } from "../context/context";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Typography } from "@material-ui/core";
 
 function Brewery({ brewery }) {
+  const { t } = useTranslation();
   const baseUrl = "https://api.openbrewerydb.org/breweries/";
   const [showModal, setShowModal] = useState(false);
   const [singleBrewery, setSingleBrewery] = useState();
 
   const { setLoading } = useContext(AppContext);
 
-  const onClose = (bool) => {
-    setShowModal(bool);
+  const onClose = (isClosed) => {
+    setShowModal(isClosed);
   };
 
   const getBreweryInfo = async (id) => {
@@ -22,9 +25,9 @@ function Brewery({ brewery }) {
       const brewery = await res.json();
       setSingleBrewery(brewery);
       setShowModal(true);
-      setLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
       setLoading(false);
     }
   };
@@ -34,13 +37,22 @@ function Brewery({ brewery }) {
       <>
         <Modal brew={singleBrewery} onClose={onClose} />
         <div className={styles.card}>
-          <h4>{brewery.name}</h4>
-          <p>City: {brewery.city}</p>
-          <p>Type: {brewery.brewery_type}</p>
+          <Typography variant="h5">{brewery.name}</Typography>
+          <Typography variant="subtitle1">
+            {t("city")} {brewery.city}
+          </Typography>
+          <Typography variant="subtitle1">
+            {t("type")} {brewery.brewery_type}
+          </Typography>
 
-          <button onClick={() => getBreweryInfo(brewery.id)}>
-            Show information
-          </button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => getBreweryInfo(brewery.id)}
+            size="small"
+          >
+            {t("button2")}
+          </Button>
         </div>
       </>
     );
@@ -48,13 +60,21 @@ function Brewery({ brewery }) {
 
   return (
     <div className={styles.card}>
-      <h4>{brewery.name}</h4>
-      <p>City: {brewery.city}</p>
-      <p>Type: {brewery.brewery_type}</p>
-
-      <button onClick={() => getBreweryInfo(brewery.id)}>
-        Show information
-      </button>
+      <Typography variant="h5">{brewery.name}</Typography>
+      <Typography variant="subtitle1">
+        {t("city")}: {brewery.city}
+      </Typography>
+      <Typography variant="subtitle1">
+        {t("type")}: {brewery.brewery_type}
+      </Typography>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => getBreweryInfo(brewery.id)}
+        size="small"
+      >
+        {t("button2")}
+      </Button>
     </div>
   );
 }

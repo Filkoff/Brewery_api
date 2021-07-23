@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { AppContext } from "../context/context";
 import { useContext } from "react";
+import Search from "../search/Search";
+import { InputLabel, NativeSelect } from "@material-ui/core";
+import styles from "./Filter.module.scss";
+import { FormControl } from "@material-ui/core";
+import { useTranslation } from "react-i18next";
 
 const Filter = () => {
   const baseurl = "https://api.openbrewerydb.org/breweries";
+
+  const { t } = useTranslation();
+
   const [cityPath, setCityPath] = useState("");
   const [typePath, setTypePath] = useState("");
 
@@ -21,17 +29,8 @@ const Filter = () => {
   const getBrewData = async () => {
     const response = await fetch(baseurl);
     const data = await response.json();
-
-    setCities(
-      data.map((brewery) => {
-        return brewery.city;
-      })
-    );
-    setTypes(
-      data.map((brewery) => {
-        return brewery.brewery_type;
-      })
-    );
+    setCities(data.map(({ city }) => city));
+    setTypes(data.map(({ brewery_type }) => brewery_type));
   };
 
   useEffect(() => {
@@ -49,7 +48,6 @@ const Filter = () => {
       setBreweries(data);
     } catch (error) {
       console.log(error);
-      setLoading(false);
     }
   };
 
@@ -66,36 +64,59 @@ const Filter = () => {
     fetchFilteredData(cityPath, type);
     setLoading(false);
   };
+
   return (
     <div>
-      <select
-        onChange={(e) => {
-          filterByCity(e.target.value);
-        }}
-      >
-        <option value="">All</option>
-        {uniqueCities.map((item, index) => {
-          return (
-            <option value={item} key={index}>
-              {item}
-            </option>
-          );
-        })}
-      </select>
-      <select
-        onChange={(e) => {
-          filterByType(e.target.value);
-        }}
-      >
-        <option value="">All</option>
-        {uniqueTypes.map((item, index) => {
-          return (
-            <option value={item} key={index}>
-              {item}
-            </option>
-          );
-        })}
-      </select>
+      <Search />
+
+      <div className={styles.selects_block}>
+        <div className={styles.single_select}>
+          <FormControl className={styles.selects}>
+            <InputLabel htmlFor="uncontrolled-native">{t("city")}</InputLabel>
+            <NativeSelect
+              inputProps={{
+                name: "name",
+                id: "uncontrolled-native",
+              }}
+              onChange={(e) => {
+                filterByCity(e.target.value);
+              }}
+            >
+              <option aria-label="None" value="" />
+              <option value="">All</option>
+              {uniqueCities.map((item, index) => {
+                return (
+                  <option value={item} key={index}>
+                    {item}
+                  </option>
+                );
+              })}
+            </NativeSelect>
+          </FormControl>
+        </div>
+        <div className={styles.single_select}>
+          <FormControl className={styles.selects}>
+            <InputLabel htmlFor="filled-age-native-simple">
+              {t("type")}
+            </InputLabel>
+            <NativeSelect
+              onChange={(e) => {
+                filterByType(e.target.value);
+              }}
+            >
+              <option aria-label="None" value="" />
+              <option value="">All</option>
+              {uniqueTypes.map((item, index) => {
+                return (
+                  <option value={item} key={index}>
+                    {item}
+                  </option>
+                );
+              })}
+            </NativeSelect>
+          </FormControl>
+        </div>
+      </div>
     </div>
   );
 };
